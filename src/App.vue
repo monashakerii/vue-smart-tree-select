@@ -33,7 +33,7 @@ export default {
             },
             {
               _id: 'warehouse-edit',
-              title: 'حذف کلربر',
+              title: 'حذف کاربر',
             },
             {
               _id: 'warehouse-delete',
