@@ -3,7 +3,6 @@
     <SmartTreeSelect
         v-model="selected"
         :options="options"
-        child-title-mode="parent-child"
     />
   </div>
 </template>
