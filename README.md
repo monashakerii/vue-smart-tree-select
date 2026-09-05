@@ -1,5 +1,53 @@
 # Vue 3 + Vite
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+# Vue Smart Tree Select
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+A customizable RTL-friendly tree select component for Vue 3.
+
+[Live Demo](https://vue-smart-tree-select.vercel.app/) ·
+
+## Installation
+
+```bash
+npm install @monashakeri/vue-smart-tree-select
+
+<script>
+import SmartTreeSelect from '@monashakeri/vue-smart-tree-select'
+import '@monashakeri/vue-smart-tree-select/style.css'
+
+export default {
+  components: {
+    SmartTreeSelect,
+  },
+
+  data() {
+    return {
+      selected: [],
+      options: [
+        {
+          _id: 'warehouse',
+          title: 'کاربران',
+          children: [
+            {
+              _id: 'warehouse-view',
+              title: 'مشاهده کاربران',
+            },
+            {
+              _id: 'warehouse-edit',
+              title: 'ویرایش کاربران',
+            },
+          ],
+        },
+      ],
+    }
+  },
+}
+</script>
+
+<template>
+  <SmartTreeSelect
+    v-model="selected"
+    :options="options"
+    child-title-mode="parent-child"
+  />
+</template>
