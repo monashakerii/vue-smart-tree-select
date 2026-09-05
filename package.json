@@ -40,7 +40,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:lib": "vite build --config vite.lib.config.js",
+    "build:lib": "vite build --config vite.lib.config.mjs",
     "prepublishOnly": "npm run build:lib"
   },
   "dependencies": {
