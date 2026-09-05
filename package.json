@@ -21,7 +21,7 @@
     "persian",
     "vazirmatn"
   ],
-  "author": "Mona shakeri",
+  "author": "Mona Shakeri",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -31,12 +31,21 @@
     "url": "https://github.com/monashakerii/vue-smart-tree-select/issues"
   },
   "homepage": "https://github.com/monashakerii/vue-smart-tree-select#readme",
-  "peerDependencies": {
-    "vue": "^2.7.0"
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "prepublishOnly": "npm run build"
+    "build:lib": "vite build --config vite.lib.config.js",
+    "prepublishOnly": "npm run build:lib"
+  },
+  "dependencies": {
+    "@fontsource/vazirmatn": "^5.3.0",
+    "vue": "^3.5.42"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.8"
   }
 }

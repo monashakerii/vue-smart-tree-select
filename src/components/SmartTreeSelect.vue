@@ -16,7 +16,9 @@
         @keydown.enter.prevent="toggleDropdown"
     >
       <span class="select-trigger__content">
-        <span v-if="selectedCount" class="count-badge">{{ selectedCount }}</span>
+        <span v-if="selectedCount" class="count-badge">
+          {{ selectedCount }}
+        </span>
 
         <span class="select-trigger__label">
           {{ selectedCount ? `${selectedCount} مورد انتخاب شده` : placeholder }}
@@ -36,13 +38,17 @@
           ×
         </span>
 
-        <svg class="chevron" :class="{ 'is-open': isDropdownOpen }" viewBox="0 0 20 20">
+        <svg
+            class="chevron"
+            :class="{ 'is-open': isDropdownOpen }"
+            viewBox="0 0 20 20"
+        >
           <path d="m5 7 5 5 5-5" />
         </svg>
       </span>
     </button>
 
-    <transition name="tree-dropdown">
+    <Transition name="tree-dropdown">
       <section v-if="isDropdownOpen" class="dropdown" @click.stop>
         <div class="dropdown__header">
           <div class="search-box">
@@ -72,7 +78,9 @@
           </div>
 
           <div class="selection-summary">
-            <span>{{ selectedCount ? `${selectedCount} انتخاب شده` : 'هنوز موردی انتخاب نشده' }}</span>
+            <span>
+              {{ selectedCount ? `${selectedCount} انتخاب شده` : 'هنوز موردی انتخاب نشده' }}
+            </span>
 
             <button
                 v-if="selectedCount"
@@ -96,12 +104,15 @@
                 <input
                     type="checkbox"
                     :checked="isParentSelected(parent)"
-                    :indeterminate.prop="isParentIndeterminate(parent)"
+                    :indeterminate="isParentIndeterminate(parent)"
                     :aria-label="`انتخاب همه موارد ${parent.title}`"
                     @change="toggleParent(parent, $event)"
                 />
+
                 <span class="check-control__box" aria-hidden="true">
-                  <svg viewBox="0 0 16 16"><path d="m3 8 3 3 7-7" /></svg>
+                  <svg viewBox="0 0 16 16">
+                    <path d="m3 8 3 3 7-7" />
+                  </svg>
                 </span>
               </label>
 
@@ -111,8 +122,13 @@
                   :aria-expanded="String(isExpanded(parent._id))"
                   @click="toggleDropdownAccordion(parent._id)"
               >
-                <span class="parent-toggle__title">{{ parent.title }}</span>
-                <span class="parent-toggle__count">{{ parent.children.length }}</span>
+                <span class="parent-toggle__title">
+                  {{ parent.title }}
+                </span>
+
+                <span class="parent-toggle__count">
+                  {{ parent.children.length }}
+                </span>
 
                 <svg
                     class="group-chevron"
@@ -124,7 +140,7 @@
               </button>
             </div>
 
-            <transition name="tree-children">
+            <Transition name="tree-children">
               <div
                   v-if="isExpanded(parent._id) && parent.children.length"
                   class="children-list"
@@ -140,11 +156,15 @@
                       :checked="isChildSelected(child)"
                       @change="toggleChild(child)"
                   />
+
                   <span class="native-check" />
-                  <span>{{ formatChildTitle(parent.title, child.title) }}</span>
+
+                  <span>
+                    {{ formatChildTitle(parent.title, child.title) }}
+                  </span>
                 </label>
               </div>
-            </transition>
+            </Transition>
           </article>
 
           <div v-if="!filteredOptions.length" class="empty-state">
@@ -153,7 +173,7 @@
           </div>
         </div>
       </section>
-    </transition>
+    </Transition>
 
     <section v-if="groupedSelectedItems.length" class="selected-groups">
       <div
@@ -169,7 +189,10 @@
               @click="toggleAccordion(group.parentId)"
           >
             <span>{{ group.parentTitle }}</span>
-            <span class="parent-toggle__count">{{ group.children.length }}</span>
+
+            <span class="parent-toggle__count">
+              {{ group.children.length }}
+            </span>
           </button>
 
           <button
@@ -183,11 +206,16 @@
         </div>
 
         <div v-show="expandedGroups[group.parentId]" class="chips">
-          <span v-for="child in group.children" :key="child._id" class="chip">
+          <span
+              v-for="child in group.children"
+              :key="child._id"
+              class="chip"
+          >
             {{ formatChildTitle(group.parentTitle, child.title) }}
+
             <button
                 type="button"
-                :aria-label="`حذف ${childLabel(child.title)}`"
+                :aria-label="`حذف ${formatChildTitle(group.parentTitle, child.title)}`"
                 @click="removeChild(child)"
             >
               ×
@@ -203,20 +231,39 @@
 import '@fontsource/vazirmatn/400.css'
 import '@fontsource/vazirmatn/600.css'
 import '@fontsource/vazirmatn/700.css'
+
 export default {
   name: 'SmartTreeSelect',
 
   props: {
-    value: { type: Array, default: () => [] },
-    options: { type: Array, default: () => [] },
-    placeholder: { type: String, default: 'انتخاب کنید' },
-    searchPlaceholder: { type: String, default: 'جست‌وجو در موارد...' },
+    modelValue: {
+      type: Array,
+      default: () => [],
+    },
+
+    options: {
+      type: Array,
+      default: () => [],
+    },
+
+    placeholder: {
+      type: String,
+      default: 'انتخاب کنید',
+    },
+
+    searchPlaceholder: {
+      type: String,
+      default: 'جست‌وجو در موارد...',
+    },
+
     childTitleMode: {
       type: String,
       default: 'child',
       validator: (value) => ['child', 'parent-child'].includes(value),
     },
   },
+
+  emits: ['update:modelValue', 'change'],
 
   data() {
     return {
@@ -229,23 +276,31 @@ export default {
 
   computed: {
     selectedCount() {
-      return this.value.length
+      return this.modelValue.length
     },
 
     filteredOptions() {
       const query = this.searchQuery.trim().toLocaleLowerCase('fa')
 
-      if (!query) return this.options
+      if (!query) {
+        return this.options
+      }
 
       return this.options
           .map((parent) => {
             const children = parent.children || []
-            const parentMatches = parent.title.toLocaleLowerCase('fa').includes(query)
+
+            const parentMatches = parent.title
+                .toLocaleLowerCase('fa')
+                .includes(query)
+
             const matchingChildren = children.filter((child) =>
                 child.title.toLocaleLowerCase('fa').includes(query)
             )
 
-            if (!parentMatches && !matchingChildren.length) return null
+            if (!parentMatches && !matchingChildren.length) {
+              return null
+            }
 
             return {
               ...parent,
@@ -256,7 +311,7 @@ export default {
     },
 
     groupedSelectedItems() {
-      const selectedIds = new Set(this.value)
+      const selectedIds = new Set(this.modelValue)
 
       return this.options
           .map((parent) => {
@@ -264,13 +319,15 @@ export default {
                 selectedIds.has(child._id)
             )
 
-            return children.length
-                ? {
-                  parentId: parent._id,
-                  parentTitle: parent.title,
-                  children,
-                }
-                : null
+            if (!children.length) {
+              return null
+            }
+
+            return {
+              parentId: parent._id,
+              parentTitle: parent.title,
+              children,
+            }
           })
           .filter(Boolean)
     },
@@ -278,40 +335,49 @@ export default {
 
   watch: {
     searchQuery(value) {
-      if (!value.trim()) return
+      if (!value.trim()) {
+        return
+      }
 
       this.filteredOptions.forEach((parent) => {
-        this.$set(this.expandedDropdownGroups, parent._id, true)
+        this.expandedDropdownGroups[parent._id] = true
       })
     },
 
     groupedSelectedItems: {
       immediate: true,
+
       handler(groups) {
         groups.forEach((group) => {
           if (this.expandedGroups[group.parentId] === undefined) {
-            this.$set(this.expandedGroups, group.parentId, true)
+            this.expandedGroups[group.parentId] = true
           }
         })
       },
     },
   },
+
   mounted() {
     document.addEventListener('pointerdown', this.handleClickOutside)
   },
 
-  beforeDestroy() {
+  beforeUnmount() {
     document.removeEventListener('pointerdown', this.handleClickOutside)
   },
+
   methods: {
     handleClickOutside(event) {
       if (!this.$refs.root?.contains(event.target)) {
         this.closeDropdown()
       }
     },
+
     openDropdown() {
       this.isDropdownOpen = true
-      this.$nextTick(() => this.$refs.searchInput?.focus())
+
+      this.$nextTick(() => {
+        this.$refs.searchInput?.focus()
+      })
     },
 
     closeDropdown() {
@@ -320,12 +386,26 @@ export default {
     },
 
     toggleDropdown() {
-      this.isDropdownOpen ? this.closeDropdown() : this.openDropdown()
+      if (this.isDropdownOpen) {
+        this.closeDropdown()
+      } else {
+        this.openDropdown()
+      }
     },
 
     isExpanded(id) {
       return Boolean(this.expandedDropdownGroups[id])
     },
+
+    toggleDropdownAccordion(id) {
+      this.expandedDropdownGroups[id] =
+          !this.expandedDropdownGroups[id]
+    },
+
+    toggleAccordion(id) {
+      this.expandedGroups[id] = !this.expandedGroups[id]
+    },
+
     formatChildTitle(parentTitle, childTitle) {
       if (this.childTitleMode === 'parent-child') {
         return `${parentTitle} - ${childTitle}`
@@ -333,72 +413,71 @@ export default {
 
       return childTitle
     },
-    toggleDropdownAccordion(id) {
-      this.$set(this.expandedDropdownGroups, id, !this.expandedDropdownGroups[id])
-    },
-
-    toggleAccordion(id) {
-      this.$set(this.expandedGroups, id, !this.expandedGroups[id])
-    },
 
     isChildSelected(child) {
-      return this.value.includes(child._id)
+      return this.modelValue.includes(child._id)
     },
 
     isParentSelected(parent) {
-      return parent.children?.length > 0 &&
-          parent.children.every((child) => this.value.includes(child._id))
+      return (
+          parent.children?.length > 0 &&
+          parent.children.every((child) =>
+              this.modelValue.includes(child._id)
+          )
+      )
     },
 
     isParentIndeterminate(parent) {
-      const selected = (parent.children || [])
-          .filter((child) => this.value.includes(child._id)).length
+      const selectedCount = (parent.children || []).filter((child) =>
+          this.modelValue.includes(child._id)
+      ).length
 
-      return selected > 0 && selected < parent.children.length
+      return (
+          selectedCount > 0 &&
+          selectedCount < parent.children.length
+      )
+    },
+
+    updateValue(value) {
+      this.$emit('update:modelValue', value)
+      this.$emit('change', value)
     },
 
     toggleChild(child) {
       const nextValue = this.isChildSelected(child)
-          ? this.value.filter((id) => id !== child._id)
-          : [...this.value, child._id]
+          ? this.modelValue.filter((id) => id !== child._id)
+          : [...this.modelValue, child._id]
 
-      this.$emit('input', nextValue)
-      this.$emit('change', nextValue)
+      this.updateValue(nextValue)
     },
 
     toggleParent(parent, event) {
       const ids = parent.children.map((child) => child._id)
-      const nextValue = event.target.checked
-          ? [...new Set([...this.value, ...ids])]
-          : this.value.filter((id) => !ids.includes(id))
 
-      this.$emit('input', nextValue)
-      this.$emit('change', nextValue)
+      const nextValue = event.target.checked
+          ? [...new Set([...this.modelValue, ...ids])]
+          : this.modelValue.filter((id) => !ids.includes(id))
+
+      this.updateValue(nextValue)
     },
 
     clearAll() {
-      this.$emit('input', [])
-      this.$emit('change', [])
+      this.updateValue([])
     },
 
     removeChild(child) {
-      const nextValue = this.value.filter((id) => id !== child._id)
-      this.$emit('input', nextValue)
-      this.$emit('change', nextValue)
+      this.updateValue(
+          this.modelValue.filter((id) => id !== child._id)
+      )
     },
 
     removeGroup(group) {
       const ids = new Set(group.children.map((child) => child._id))
-      const nextValue = this.value.filter((id) => !ids.has(id))
-      this.$emit('input', nextValue)
-      this.$emit('change', nextValue)
-    },
 
-    childLabel(title) {
-      const separatorIndex = title.indexOf('-')
-      return separatorIndex > -1 ? title.slice(separatorIndex + 1).trim() : title
+      this.updateValue(
+          this.modelValue.filter((id) => !ids.has(id))
+      )
     },
-
   },
 }
 </script>
