@@ -25,19 +25,19 @@ export default {
       options: [
         {
           _id: 'warehouse',
-          title: 'انبار',
+          title: 'دسترسی',
           children: [
             {
               _id: 'warehouse-view',
-              title: 'مشاهده انبار',
+              title: 'ویرایش کاربر',
             },
             {
               _id: 'warehouse-edit',
-              title: 'ویرایش انبار',
+              title: 'حذف کلربر',
             },
             {
               _id: 'warehouse-delete',
-              title: 'حذف انبار',
+              title: 'ایجاد کاربر',
             },
           ],
         },
