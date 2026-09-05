@@ -51,3 +51,27 @@ export default {
     child-title-mode="parent-child"
   />
 </template>
+
+## Child title display
+
+به‌صورت پیش‌فرض فقط عنوان child نمایش داده می‌شود:
+
+```text
+مشاهده کاربران
+```
+
+اگر می‌خواهید عنوان گروه هم کنار عنوان child نمایش داده شود، prop زیر را اضافه کنید:
+
+```vue
+<SmartTreeSelect
+  v-model="selected"
+  :options="options"
+  child-title-mode="parent-child"
+/>
+```
+
+خروجی:
+
+```text
+کاربران - مشاهده کاربران
+```
