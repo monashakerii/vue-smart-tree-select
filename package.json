@@ -1,6 +1,6 @@
 {
   "name": "@monashakeri/vue-smart-tree-select",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A customizable RTL-friendly tree select component for Vue 2.",
   "main": "./dist/vue-smart-tree-select.umd.js",
   "module": "./dist/vue-smart-tree-select.es.js",
@@ -8,8 +8,10 @@
     ".": {
       "import": "./dist/vue-smart-tree-select.es.js",
       "require": "./dist/vue-smart-tree-select.umd.js"
-    }
+    },
+    "./style.css": "./dist/style.css"
   },
+  "style": "./dist/style.css",
   "files": [
     "dist"
   ],
